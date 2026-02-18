@@ -18,7 +18,7 @@ class DashboardScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Hacienda La Daniela',
+              'Hacienda',
               style: TextStyle(
                 fontSize: 14,
                 color: Colors.grey[600],
@@ -27,7 +27,7 @@ class DashboardScreen extends StatelessWidget {
             ),
             const SizedBox(height: 4),
             const Text(
-              'Hola, Daniela 👋',
+              'Hola 👋',
               style: TextStyle(
                 fontSize: 26,
                 fontWeight: FontWeight.bold,
