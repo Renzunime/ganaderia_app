@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ganaderia_app/features/ganado/presentation/widgets/milk_chart.dart';
 import 'package:ganaderia_app/features/ganado/presentation/widgets/health_timeline.dart';
-import 'package:ganaderia_app/features/ganado/presentation/widgets/quick_action_modal.dart'; // <--- IMPORTANTE
+import 'package:ganaderia_app/features/ganado/presentation/widgets/quick_action_modal.dart';
 
 class CowDetailScreen extends StatelessWidget {
   final String cowId;
@@ -16,7 +16,7 @@ class CowDetailScreen extends StatelessWidget {
       backgroundColor: Colors.white,
       body: CustomScrollView(
         slivers: [
-          // 1. CABECERA
+          // 1. CABECERA CON FOTO
           SliverAppBar(
             expandedHeight: 250.0,
             floating: false,
@@ -49,7 +49,7 @@ class CowDetailScreen extends StatelessWidget {
             ),
           ),
 
-          // 2. CONTENIDO
+          // 2. CONTENIDO PRINCIPAL
           SliverList(
             delegate: SliverChildListDelegate([
               Padding(
@@ -66,7 +66,7 @@ class CowDetailScreen extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 15),
-                    const _LifeCycleTimeline(currentStage: 2),
+                    const _LifeCycleTimeline(currentStage: 2), // 2 = Preñada
                     const SizedBox(height: 30),
 
                     // B: DATOS CLAVE
@@ -80,7 +80,7 @@ class CowDetailScreen extends StatelessWidget {
                     ),
                     const Divider(height: 40),
 
-                    // C: ACCIONES RÁPIDAS (CONECTADAS)
+                    // C: ACCIONES RÁPIDAS
                     const Text(
                       'Acciones Rápidas',
                       style: TextStyle(
@@ -139,7 +139,15 @@ class CowDetailScreen extends StatelessWidget {
                     const Divider(),
                     const SizedBox(height: 20),
 
-                    // D: GRÁFICOS (LECHE Y SALUD)
+                    // D: GENEALOGÍA (¡NUEVO!)
+                    // Aquí integramos el widget que habías creado
+                    const CowGenealogyWidget(),
+
+                    const SizedBox(height: 30),
+                    const Divider(),
+                    const SizedBox(height: 20),
+
+                    // E: GRÁFICOS (LECHE Y SALUD)
                     const Text(
                       'Producción de Leche',
                       style: TextStyle(
@@ -166,7 +174,70 @@ class CowDetailScreen extends StatelessWidget {
   }
 }
 
-// --- WIDGETS PRIVADOS ---
+// ==========================================
+// WIDGETS AUXILIARES (Genealogía, Timeline, etc)
+// ==========================================
+
+class CowGenealogyWidget extends StatelessWidget {
+  const CowGenealogyWidget({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text('Genealogía (Pedigree)',
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+        const SizedBox(height: 15),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            const _ParentCard(
+                label: 'Padre',
+                name: 'Sansón 404',
+                breed: 'Brahman Rojo',
+                isMale: true),
+            const Icon(Icons.favorite, color: Colors.pink, size: 16),
+            const _ParentCard(
+                label: 'Madre', name: 'Lola 200', breed: 'Gyr', isMale: false),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+class _ParentCard extends StatelessWidget {
+  final String label;
+  final String name;
+  final String breed;
+  final bool isMale;
+
+  const _ParentCard({
+    required this.label,
+    required this.name,
+    required this.breed,
+    required this.isMale,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        CircleAvatar(
+          radius: 30,
+          backgroundColor: isMale ? Colors.blue[100] : Colors.pink[100],
+          child: Icon(Icons.pets, color: isMale ? Colors.blue : Colors.pink),
+        ),
+        const SizedBox(height: 8),
+        Text(label, style: const TextStyle(fontSize: 12, color: Colors.grey)),
+        Text(name, style: const TextStyle(fontWeight: FontWeight.bold)),
+        Text(breed, style: const TextStyle(fontSize: 10, color: Colors.grey)),
+      ],
+    );
+  }
+}
+
 class _LifeCycleTimeline extends StatelessWidget {
   final int currentStage;
   const _LifeCycleTimeline({required this.currentStage});
@@ -270,7 +341,7 @@ class _ActionButton extends StatelessWidget {
   final IconData icon;
   final String label;
   final Color color;
-  final VoidCallback onTap; // Nueva propiedad
+  final VoidCallback onTap;
 
   const _ActionButton({
     required this.icon,
@@ -282,7 +353,6 @@ class _ActionButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      // Cambiado a InkWell
       onTap: onTap,
       borderRadius: BorderRadius.circular(12),
       child: Container(
