@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
+// IMPORTAMOS TODAS LAS PANTALLAS REALES QUE YA CREAMOS
+import 'package:ganaderia_app/features/finanzas/presentation/screens/finance_screen.dart';
+import 'package:ganaderia_app/features/produccion/presentation/screens/milk_production_screen.dart';
+import 'package:ganaderia_app/features/reproduccion/presentation/screens/reproduction_screen.dart';
+import 'package:ganaderia_app/features/reportes/presentation/screens/reports_screen.dart'; // <--- Nueva
 import 'package:ganaderia_app/features/zootecnista/presentation/screens/ration_calculator_screen.dart';
 import 'package:ganaderia_app/features/zootecnista/presentation/screens/pregnancy_calculator_screen.dart';
-// Importamos la pantalla comodín
+// Para lo que falte (Genealogía) usamos el preview
 import 'package:ganaderia_app/shared/widgets/feature_preview_screen.dart';
 
 class ZootecnistaScreen extends StatelessWidget {
@@ -12,142 +17,108 @@ class ZootecnistaScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.grey[50],
       appBar: AppBar(
-        title: const Text(
-          'Centro de Gestión',
-          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black87),
-        ),
+        title: const Text('Gestión de Finca',
+            style:
+                TextStyle(fontWeight: FontWeight.bold, color: Colors.black87)),
         backgroundColor: Colors.white,
         elevation: 0,
         centerTitle: true,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(20.0),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'Herramientas Inteligentes',
-              style: TextStyle(
-                fontSize: 18,
-                color: Colors.grey,
-                fontWeight: FontWeight.w500,
-              ),
+            // SECCIÓN 1: LOS PILARES (Igual que Innobovino)
+            const Text('Módulos Principales',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 15),
+            GridView.count(
+              shrinkWrap: true, // Importante para que funcione dentro de Column
+              physics: const NeverScrollableScrollPhysics(),
+              crossAxisCount: 2,
+              crossAxisSpacing: 15,
+              mainAxisSpacing: 15,
+              childAspectRatio: 1.1,
+              children: [
+                _ManagementCard(
+                  title: 'Producción\nde Leche',
+                  icon: Icons.water_drop,
+                  color: Colors.blue,
+                  onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (_) => const MilkProductionScreen())),
+                ),
+                _ManagementCard(
+                  title: 'Finanzas\ny Costos',
+                  icon: Icons.attach_money,
+                  color: Colors.green,
+                  onTap: () => Navigator.push(context,
+                      MaterialPageRoute(builder: (_) => const FinanceScreen())),
+                ),
+                _ManagementCard(
+                  title: 'Calendario\nReproductivo',
+                  icon: Icons.calendar_month,
+                  color: Colors.purple,
+                  onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (_) => const ReproductionScreen())),
+                ),
+                _ManagementCard(
+                  title: 'Reportes\ny Exportar',
+                  icon: Icons.bar_chart,
+                  color: Colors.orange,
+                  onTap: () => Navigator.push(context,
+                      MaterialPageRoute(builder: (_) => const ReportsScreen())),
+                ),
+              ],
             ),
+
+            const SizedBox(height: 30),
+
+            // SECCIÓN 2: HERRAMIENTAS TÉCNICAS (Lo que antes era "Zootecnista")
+            const Text('Herramientas Técnicas',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             const SizedBox(height: 15),
 
-            // BARRA DE BÚSQUEDA
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 15),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(12),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.withOpacity(0.1),
-                    blurRadius: 5,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
-              ),
-              child: const TextField(
-                decoration: InputDecoration(
-                  icon: Icon(Icons.search, color: Colors.green),
-                  hintText: 'Buscar herramienta...',
-                  border: InputBorder.none,
-                ),
-              ),
-            ),
-
-            const SizedBox(height: 20),
-
-            // --- GRILLA COMPLETA (Cubriendo funciones de Innobovino) ---
-            Expanded(
-              child: GridView.count(
-                crossAxisCount: 2,
-                crossAxisSpacing: 15,
-                mainAxisSpacing: 15,
-                childAspectRatio: 0.9, // Hace las tarjetas un poco más altas
+            // Lista horizontal para herramientas específicas
+            SizedBox(
+              height: 140,
+              child: ListView(
+                scrollDirection: Axis.horizontal,
                 children: [
-                  // 1. CALCULADORA (REAL)
-                  _ToolCard(
-                    title: 'Calculadora\nde Ración',
+                  _ToolMiniCard(
+                    title: 'Calculadora\nRación',
                     icon: Icons.scale_outlined,
-                    color: Colors.green,
+                    color: Colors.teal,
                     onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => const RationCalculatorScreen(),
-                      ),
-                    ),
+                        context,
+                        MaterialPageRoute(
+                            builder: (_) => const RationCalculatorScreen())),
                   ),
-
-                  // 2. PARTO (REAL)
-                  _ToolCard(
-                    title: 'Proyección\nde Parto',
-                    icon: Icons.calendar_month_outlined,
-                    color: Colors.purple,
+                  _ToolMiniCard(
+                    title: 'Proyección\nParto',
+                    icon: Icons.baby_changing_station,
+                    color: Colors.pinkAccent,
                     onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => const PregnancyCalculatorScreen(),
-                      ),
-                    ),
+                        context,
+                        MaterialPageRoute(
+                            builder: (_) => const PregnancyCalculatorScreen())),
                   ),
-
-                  // 3. FINANZAS (NUEVO - DEMO)
-                  _ToolCard(
-                    title: 'Finanzas &\nCostos',
-                    icon: Icons.attach_money,
-                    color: Colors.blue,
-                    onTap: () => _goToPreview(
-                      context,
-                      'Finanzas',
-                      'Control total de gastos en alimentos, medicinas y venta de leche. Calcula tu rentabilidad exacta.',
-                      Icons.pie_chart,
-                      Colors.blue,
-                    ),
-                  ),
-
-                  // 4. GENEALOGÍA (NUEVO - DEMO)
-                  _ToolCard(
+                  _ToolMiniCard(
                     title: 'Árbol\nGenealógico',
-                    icon: Icons.account_tree_outlined,
+                    icon: Icons.account_tree,
                     color: Colors.brown,
-                    onTap: () => _goToPreview(
-                      context,
-                      'Genealogía',
-                      'Visualiza padres, abuelos y descendencia para evitar consanguinidad y mejorar la genética.',
-                      Icons.account_tree,
-                      Colors.brown,
-                    ),
-                  ),
-
-                  // 5. ORDEÑO DIARIO (NUEVO - DEMO)
-                  _ToolCard(
-                    title: 'Registro de\nOrdeño',
-                    icon: Icons.water_drop_outlined,
-                    color: Colors.lightBlue,
-                    onTap: () => _goToPreview(
-                      context,
-                      'Tanque de Leche',
-                      'Registro diario de litros totales, calidad de leche y precios de venta actuales.',
-                      Icons.water_drop,
-                      Colors.lightBlue,
-                    ),
-                  ),
-
-                  // 6. REPORTES (NUEVO - DEMO)
-                  _ToolCard(
-                    title: 'Reportes\nPDF/Excel',
-                    icon: Icons.picture_as_pdf_outlined,
-                    color: Colors.redAccent,
-                    onTap: () => _goToPreview(
-                      context,
-                      'Centro de Reportes',
-                      'Descarga listados de vacunación, inventarios y cierres de mes para compartir por WhatsApp.',
-                      Icons.file_download,
-                      Colors.redAccent,
-                    ),
+                    onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (_) => FeaturePreviewScreen(
+                                title: 'Genealogía',
+                                description: 'Rastreo de padres y abuelos.',
+                                icon: Icons.account_tree,
+                                color: Colors.brown))),
                   ),
                 ],
               ),
@@ -157,42 +128,20 @@ class ZootecnistaScreen extends StatelessWidget {
       ),
     );
   }
-
-  // Helper para navegar a la demo
-  void _goToPreview(
-    BuildContext context,
-    String title,
-    String desc,
-    IconData icon,
-    Color color,
-  ) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) => FeaturePreviewScreen(
-          title: title,
-          description: desc,
-          icon: icon,
-          color: color,
-        ),
-      ),
-    );
-  }
 }
 
-// --- WIDGET TARJETA (Sin cambios, solo reusado) ---
-class _ToolCard extends StatelessWidget {
+// TARJETA GRANDE (Módulos Principales)
+class _ManagementCard extends StatelessWidget {
   final String title;
   final IconData icon;
   final Color color;
   final VoidCallback onTap;
 
-  const _ToolCard({
-    required this.title,
-    required this.icon,
-    required this.color,
-    required this.onTap,
-  });
+  const _ManagementCard(
+      {required this.title,
+      required this.icon,
+      required this.color,
+      required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -205,35 +154,70 @@ class _ToolCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(20),
           boxShadow: [
             BoxShadow(
-              color: Colors.grey.withOpacity(0.1),
-              blurRadius: 10,
-              offset: const Offset(0, 5),
-            ),
+                color: Colors.grey.withOpacity(0.1),
+                blurRadius: 10,
+                offset: const Offset(0, 5))
           ],
-          border: Border.all(color: color.withOpacity(0.1), width: 2),
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
-              padding: const EdgeInsets.all(12),
+              padding: const EdgeInsets.all(15),
               decoration: BoxDecoration(
-                color: color.withOpacity(0.1),
-                shape: BoxShape.circle,
-              ),
-              child: Icon(icon, size: 28, color: color),
+                  color: color.withOpacity(0.1), shape: BoxShape.circle),
+              child: Icon(icon, size: 35, color: color),
             ),
-            const SizedBox(height: 12),
-            Text(
-              title,
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 15,
-                color: Colors.black87,
-              ),
-            ),
+            const SizedBox(height: 10),
+            Text(title,
+                textAlign: TextAlign.center,
+                style:
+                    const TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+// TARJETA PEQUEÑA (Herramientas)
+class _ToolMiniCard extends StatelessWidget {
+  final String title;
+  final IconData icon;
+  final Color color;
+  final VoidCallback onTap;
+
+  const _ToolMiniCard(
+      {required this.title,
+      required this.icon,
+      required this.color,
+      required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 110,
+      margin: const EdgeInsets.only(right: 15),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(15),
+        child: Container(
+          decoration: BoxDecoration(
+            color: color.withOpacity(0.05),
+            borderRadius: BorderRadius.circular(15),
+            border: Border.all(color: color.withOpacity(0.2)),
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(icon, color: color, size: 28),
+              const SizedBox(height: 8),
+              Text(title,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                      fontSize: 12, fontWeight: FontWeight.bold, color: color)),
+            ],
+          ),
         ),
       ),
     );

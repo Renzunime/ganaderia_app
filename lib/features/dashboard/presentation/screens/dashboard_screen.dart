@@ -173,14 +173,6 @@ class DashboardScreen extends StatelessWidget {
           ],
         ),
       ),
-      // EL CEREBRO: Botón flotante central de IA
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {},
-        backgroundColor: Colors.black,
-        icon: const Icon(Icons.auto_awesome, color: Colors.yellowAccent),
-        label:
-            const Text('Asistente IA', style: TextStyle(color: Colors.white)),
-      ),
     );
   }
 }

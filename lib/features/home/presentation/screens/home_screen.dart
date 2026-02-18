@@ -45,13 +45,9 @@ class _HomeScreenState extends State<HomeScreen> {
               activeIcon: Icon(Icons.pets),
               label: 'Ganado'),
           BottomNavigationBarItem(
-              icon: Icon(Icons.science_outlined),
-              activeIcon: Icon(Icons.science),
-              label: 'Zootecnista'),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.grid_view),
-              activeIcon: Icon(Icons.grid_view_rounded),
-              label: 'Menú'),
+              icon: Icon(Icons.manage_accounts_outlined),
+              activeIcon: Icon(Icons.manage_accounts),
+              label: 'Gestión'),
         ],
       ),
     );

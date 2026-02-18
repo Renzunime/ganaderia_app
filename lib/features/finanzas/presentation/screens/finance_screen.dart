@@ -6,45 +6,64 @@ class FinanceScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey[50],
       appBar: AppBar(
-          title: const Text('Finanzas'),
-          backgroundColor: Colors.white,
-          foregroundColor: Colors.black,
-          elevation: 0),
-      backgroundColor: Colors.white,
+        title: const Text('Finanzas de la Finca',
+            style:
+                TextStyle(color: Colors.black87, fontWeight: FontWeight.bold)),
+        backgroundColor: Colors.white,
+        elevation: 0,
+        centerTitle: true,
+        iconTheme: const IconThemeData(color: Colors.black87),
+      ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // BALANCE GENERAL
+            // 1. TARJETA DE BALANCE PRINCIPAL (Estilo Tarjeta de Crédito)
             Container(
+              width: double.infinity,
               padding: const EdgeInsets.all(25),
               decoration: BoxDecoration(
-                color: Colors.black87,
-                borderRadius: BorderRadius.circular(20),
+                gradient: LinearGradient(
+                  colors: [Colors.green[800]!, Colors.green[600]!],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+                borderRadius: BorderRadius.circular(25),
+                boxShadow: [
+                  BoxShadow(
+                      color: Colors.green.withOpacity(0.3),
+                      blurRadius: 15,
+                      offset: const Offset(0, 10)),
+                ],
               ),
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text('Balance del Mes',
-                      style: TextStyle(color: Colors.grey)),
+                  const Text('Balance Total (Este Mes)',
+                      style: TextStyle(color: Colors.white70, fontSize: 16)),
                   const SizedBox(height: 10),
-                  const Text('\$ 4,250.00',
+                  const Text('\$ 4,500.00',
                       style: TextStyle(
                           color: Colors.white,
                           fontSize: 36,
                           fontWeight: FontWeight.bold)),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 25),
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       _FinanceIndicator(
                           label: 'Ingresos',
-                          value: '+\$8,500',
-                          color: Colors.greenAccent),
-                      Container(width: 1, height: 40, color: Colors.grey),
+                          value: '+\$ 6,200',
+                          icon: Icons.arrow_upward,
+                          color: Colors.lightGreenAccent),
+                      Container(width: 1, height: 40, color: Colors.white24),
                       _FinanceIndicator(
                           label: 'Gastos',
-                          value: '-\$4,250',
+                          value: '-\$ 1,700',
+                          icon: Icons.arrow_downward,
                           color: Colors.redAccent),
                     ],
                   ),
@@ -54,35 +73,54 @@ class FinanceScreen extends StatelessWidget {
 
             const SizedBox(height: 30),
 
-            // DESGLOSE (Lista visual)
-            const Align(
-              alignment: Alignment.centerLeft,
-              child: Text('Movimientos Recientes',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-            ),
+            // 2. ACCIONES RÁPIDAS
+            const Text('Registrar Transacción',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             const SizedBox(height: 15),
+            Row(
+              children: [
+                Expanded(
+                    child: _ActionButton(
+                        icon: Icons.monetization_on,
+                        label: 'Venta Leche',
+                        color: Colors.blue)),
+                const SizedBox(width: 15),
+                Expanded(
+                    child: _ActionButton(
+                        icon: Icons.shopping_bag,
+                        label: 'Compra Insumos',
+                        color: Colors.orange)),
+              ],
+            ),
 
-            _TransactionItem(
-              title: 'Venta de Leche (Quincena 1)',
-              category: 'Ingreso',
-              amount: '+\$ 4,100.00',
-              date: '15 Feb 2026',
-              isIncome: true,
+            const SizedBox(height: 30),
+
+            // 3. LISTA DE ÚLTIMOS MOVIMIENTOS
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text('Movimientos Recientes',
+                    style:
+                        TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                TextButton(onPressed: () {}, child: const Text('Ver Todo')),
+              ],
             ),
-            _TransactionItem(
-              title: 'Compra Concentrado',
-              category: 'Alimentación',
-              amount: '-\$ 850.00',
-              date: '14 Feb 2026',
-              isIncome: false,
-            ),
-            _TransactionItem(
-              title: 'Pago Veterinario',
-              category: 'Sanidad',
-              amount: '-\$ 120.00',
-              date: '10 Feb 2026',
-              isIncome: false,
-            ),
+            const SizedBox(height: 10),
+            _TransactionTile(
+                title: 'Venta Lote #4',
+                date: 'Hoy, 10:00 AM',
+                amount: '+\$ 1,200.00',
+                isIncome: true),
+            _TransactionTile(
+                title: 'Compra Vacunas',
+                date: 'Ayer, 4:30 PM',
+                amount: '-\$ 350.00',
+                isIncome: false),
+            _TransactionTile(
+                title: 'Pago Veterinario',
+                date: '15 Feb, 9:00 AM',
+                amount: '-\$ 120.00',
+                isIncome: false),
           ],
         ),
       ),
@@ -91,65 +129,103 @@ class FinanceScreen extends StatelessWidget {
 }
 
 class _FinanceIndicator extends StatelessWidget {
-  final String label;
-  final String value;
+  final String label, value;
+  final IconData icon;
   final Color color;
   const _FinanceIndicator(
-      {required this.label, required this.value, required this.color});
+      {required this.label,
+      required this.value,
+      required this.icon,
+      required this.color});
 
   @override
   Widget build(BuildContext context) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: const TextStyle(color: Colors.grey, fontSize: 12)),
-        const SizedBox(height: 4),
+        Row(
+          children: [
+            Icon(icon, color: color, size: 16),
+            const SizedBox(width: 5),
+            Text(label, style: const TextStyle(color: Colors.white70)),
+          ],
+        ),
+        const SizedBox(height: 5),
         Text(value,
-            style: TextStyle(
-                color: color, fontWeight: FontWeight.bold, fontSize: 16)),
+            style: const TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: 18)),
       ],
     );
   }
 }
 
-class _TransactionItem extends StatelessWidget {
-  final String title;
-  final String category;
-  final String amount;
-  final String date;
-  final bool isIncome;
-
-  const _TransactionItem({
-    required this.title,
-    required this.category,
-    required this.amount,
-    required this.date,
-    required this.isIncome,
-  });
+class _ActionButton extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final Color color;
+  const _ActionButton(
+      {required this.icon, required this.label, required this.color});
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      contentPadding: EdgeInsets.zero,
-      leading: Container(
-        padding: const EdgeInsets.all(10),
-        decoration: BoxDecoration(
-          color: isIncome ? Colors.green[50] : Colors.red[50],
-          shape: BoxShape.circle,
-        ),
-        child: Icon(
-          isIncome ? Icons.attach_money : Icons.shopping_bag_outlined,
-          color: isIncome ? Colors.green : Colors.red,
-        ),
-      ),
-      title: Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
-      subtitle: Text('$date • $category'),
-      trailing: Text(
-        amount,
-        style: TextStyle(
-          color: isIncome ? Colors.green[700] : Colors.red[700],
-          fontWeight: FontWeight.bold,
-          fontSize: 16,
-        ),
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 15),
+      decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(15),
+          border: Border.all(color: Colors.grey[200]!)),
+      child: Column(children: [
+        Icon(icon, color: color, size: 28),
+        const SizedBox(height: 8),
+        Text(label, style: const TextStyle(fontWeight: FontWeight.bold))
+      ]),
+    );
+  }
+}
+
+class _TransactionTile extends StatelessWidget {
+  final String title, date, amount;
+  final bool isIncome;
+  const _TransactionTile(
+      {required this.title,
+      required this.date,
+      required this.amount,
+      required this.isIncome});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+          color: Colors.white, borderRadius: BorderRadius.circular(16)),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+                color: isIncome ? Colors.green[50] : Colors.red[50],
+                shape: BoxShape.circle),
+            child: Icon(isIncome ? Icons.arrow_downward : Icons.arrow_upward,
+                color: isIncome ? Colors.green : Colors.red),
+          ),
+          const SizedBox(width: 15),
+          Expanded(
+            child:
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
+              Text(date,
+                  style: const TextStyle(color: Colors.grey, fontSize: 12))
+            ]),
+          ),
+          Text(amount,
+              style: TextStyle(
+                  color: isIncome ? Colors.green[700] : Colors.red[700],
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16)),
+        ],
       ),
     );
   }
